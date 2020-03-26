@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Server</title>
+    <style>
+        section {
+            margin: 0 5em;
+        }
+        
+        .code {
+            background: rgb(194, 192, 192);
+            padding: 1em;
+            line-height: 1.2em;
+            margin: auto 3em;
+        }
+        
+        span.code {
+            background: lavender;
+            margin: 0.3em 0.2em;
+            padding: 0em 0.3em;
+        }
+        
+        .button {
+            margin: 3em;
+        }
+        
+        button#submit {
+            padding: 1em 0.5em;
+            width: 10em;
+            color: red;
+            background: seagreen;
+            border-radius: 1em;
+            border: orange;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="current-location">
+        <!-- 
+        Github Link: 
+        https://github.com/CodingTrain/Intro-to-Data-APIs-JS/tree/source/module2
+
+        MDN Date.now() : https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Date/now
+        -->
+        <h1>Geolocation Using MDN API</h1>
+        <p>
+            To be able to geolocate, the first thing was to check if geolocation is available in the browser. Go to
+            <a href="https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API/Using_the_Geolocation_API" target="_blank">MDN Geolocation API documentation</a> to copy the code and paste in javascript. Edit code as needed. Do a console.log() to
+            see.
+        </p>
+        <p>
+            If geolocation is available, go back to the MDN documentation, copy the code to <span class="code">getCurrentPosition() </span> and paste in the "geolocation is available" if statement. May need to adjust the code a little. Console log the
+            position to see the whole object, the lat lon is optional as we can already see those in the position object.
+        </p>
+
+
+        <!-- <script>
+            //All scripts from here moved to app.js in the js directory
+        </script> -->
+
+        <h2>My Position</h2>
+        <p>
+            The third thing is to actually put the position lat, lon on the page. That can be done by defining a const for the lat and another for the lon. Add the latitude and longitude span to html, then do <br>
+            <span class="code">document.getElementById('latitude').textContent
+        = lat; 
+    </span> <br> <span class="code"> document.getElementById('longitude').textContent = lon;</span> <br> in javascript to get the DOM elements. Refresh the browser and see the position
+        </p>
+        <p class="code">
+            <strong>Latitude</strong>: <span id="latitude"></span>&deg; <br>
+            <strong>Longitude</strong>: <span id="longitude"></span>&deg;
+        </p>
+
+        <div class="button">
+            <!-- Add a button to submit lat lon -->
+            <button id="submit">Submit</button>
+        </div>
+
+    </section>
+
+    <section class="post-request">
+        <h2>POST Request</h2>
+        <h3>SENDING DATA TO THE SERVER FROM THE CLIENT SIDE</h3>
+        <p>
+            This involve 3 three things
+        </p>
+        <ul>
+            <li><strong>Routing</strong>: the address neede to send/receive data</li>
+            <li><strong>JSON Parsing</strong>: make the json doc readable in the code.</li>
+            <li><strong>POST with fetch</strong></li>
+        </ul>
+        <p>In indx.js (server) add:</p>
+        <p class="code">
+            app.post('/', function (req, res) { res.send('POST request to homepage') });
+        </p>
+        <p>Then we can edit this to</p>
+        <p class="code">
+            app.post('/api', (request, response) => { <br> //console.log(request); // 1st log the request and see <br> console.log(request.body); <br> //8b. then log the request body (our main interest for now) console.log('This is the request data');
+            });
+        </p>
+        <p>
+            Then go to the html (I moved that to a js dir as app.js), add the code from <a href="https://developer.mozilla.org/en-US/docs/Web/API/Headers"> MDN Header doc</a> to send this data to the server using POST request
+        </p>
+        <p class="code">
+            a. add a const for data, options and fetch const data = { <br> lat, <br> lon <br> } <br> const options = { <br> method: 'POST', <br> headers: { <br> 'Content-Type': 'application/json' <br> }, <br> body: JSON.stringify(data)
+            <br> }; <br> fetch('api', options);
+        </p>
+        <p>
+            In the index.js file, tell server to use json, (see <a href="https://expressjs.com/ja/api.html" target="_blank">Express</a> ) add this under where we first added <span class="code">app.use(express) </span> <br>
+            <span class="code">app.use(express.json({ limit: '1mb' })); </span> //add a limit to the data to control how much data can be received at a go <br><br> Then go down to <span class="code">app.post()</span> log request.body<br> <br> <span class="code">console.log(request.body);</span>            our main interest for now.
+        </p>
+        <p>
+            It is required that response must return what it received so we need to add the following to app.post()
+            <span class="code">
+                const data = request.body; <br>
+            </span> Then create a response.json block and console log the response <br>
+        </p>
+        <p class="code">
+            response.json({ <br> status: 'success', <br> latitude: data.lat <br> longitude: data.lon <br> });
+        </p>
+
+        <p>
+            Then go back to html file to add '.then' to the fetch sentence and log the response <br> Or just straight log request.body.foo
+        </p>
+        <p class="code">
+            response.json({ <br> status: 'success', <br> latitude: request.body.lat, <br> longitude: request.body.lon <br> });
+            <br><br> //Then go back to html file ( now app.js) to add '.then' to the fetch sentence and log the response
+        </p>
+        <p class="code">
+            fetch('api', options).then(response => { <br> console.log(response); <br> });
+        </p>
+        <p>
+            Still in app.js, the final step is to add async to the getCurrentPosition() function:
+            <span class="code">
+                navigator.geolocation.getCurrentPosition(position => { ... } <br>
+                change to : <br>
+                navigator.geolocation.getCurrentPosition(async position => { .. }
+            </span> <br> and re-write the fetch as follows:
+        </p>
+        <p class="code">
+            const response = await fetch('api', options); <br> const json = await response.json(); <br> console.log(json);
+        </p>
+
+        <p class="code">
+            All the server code at this stage should look like the following code below. <br><br> //1st add express to run server <br><br> const express = require('express'); <br> const app = express(); //2. start an instance of app <br><br> app.use(express.static('website'));
+            <br><br> app.use(express.json({ <br> limit: '1mb' <br> })); <br><br> const port = 8080; <br><br> app.listen(port, () => console.log(`Listening at localhost: ${port}`)); <br><br> //7. POST request to send data from client <br> app.post('/api',
+            (request, response) => { <br> //console.log(request); // 1st log the request and see <br> console.log(request.body); //8b. then log the request body (our main interest for now) <br> console.log('This is the request data'); <br> //9. Required
+            that response must return what it received so add the following <br> //const data = request.body; //this + data.lat, data.lon in response.json, or just straight request.body.lat, lon as is now. <br> response.json({ <br> status: 'success',
+            <br> latitude: request.body.lat, //data.lat <br> longitude: request.body.lon //data.lon <br> }); // then go back to html file to add '.then' to the fetch sentence and log the response <br> });
+
+        </p>
+        <p>And the app.js should be:</p>
+        <p class="code">
+            if ("geolocation" in navigator) { <br> <br> console.log('Geolocation is available'); <br><br> navigator.geolocation.getCurrentPosition(async position => { //c. make this an async <br> const lat = position.coords.latitude;
+            <br> const lon = position.coords.longitude; <br> document.getElementById('latitude').textContent = lat; <br> document.getElementById('longitude').textContent = lon;<br><br> const data = { <br> lat, <br> lon <br> } <br> const options = { <br>            method: 'POST', <br> headers: { <br> 'Content-Type': 'application/json' <br> }, <br> body: JSON.stringify(data) <br> }; <br><br> const response = await fetch('api', options); <br> const json = await response.json(); <br> console.log(json);
+            <br> }); <br> } else { <br> console.log('Geolocation is not available'); <br> }
+        </p>
+    </section>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>
