@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/p5.min.js" integrity="sha256-Pg1di+fBF53Rbh9oZR/FeD1xsFzTLC963lcac1D0ias=" crossorigin="anonymous"></script>
+    <!-- p5.js Source:  https://cdnjs.com/libraries/p5.js/1.0.0 copy script Tag here-->
     <title>All Data</title>
     <style>
         .button,
@@ -22,14 +24,30 @@
             font-weight: 600;
         }
         
-        div div {
+        div div,
+        p {
             padding: 1em 2em;
             font-size: 1.2em;
+        }
+        
+        img {
+            display: block;
+            margin: 0 auto;
+            width: 30%;
+            /* Put the image center width: 50%; */
+        }
+        
+        video {
+            position: absolute;
+            top: 50px;
+            left: 450px;
         }
     </style>
 </head>
 
 <body>
+    <p> <a href="index.html" alt="top page">Top Page</a> </p>
+
     <p class="code">
         <strong>Latitude</strong>: <span id="latitude"></span>&deg; <br>
         <strong>Longitude</strong>: <span id="longitude"></span>&deg;
