@@ -3,8 +3,11 @@ const express = require('express');
 
 const Datastore = require('nedb'); // require nedb SD 1
 
+//i. heroku deploy, import json data
+const importData = require("./data.json");
+
 const app = express(); //2. start an instance of app
-const port = 8080;
+let port = process.env.PORT || 8080;
 app.use(express.static('website'));
 
 // see: https://expressjs.com/ja/api.html
@@ -21,7 +24,7 @@ database.insert({ name: 'The Boss', status: 'training' });
  */
 
 
-app.listen(port, () => console.log(`Listening at localhost: ${port}`));
+app.listen(port, () => console.log(`Listening at localhost: http://localhost:${port}`));
 
 // create a get request to handle GET 
 app.get('/api', (request, response) => {
@@ -36,6 +39,10 @@ app.get('/api', (request, response) => {
         response.json(data);
     });
 });
+//ii.  heroku deploy, get the imported json data
+app.get("/country", (req, res) => {
+    res.send(importData)
+})
 
 //7. POST request to send data from client
 app.post('/api', (request, response) => {

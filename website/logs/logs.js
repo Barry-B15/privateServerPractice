@@ -1,6 +1,6 @@
 getData();
 
-//=============== Sort Images ========================================
+//=============== Sort Images =========================
 const selfies = [];
 
 document.getElementById('time').addEventListener('click', event => {
